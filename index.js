@@ -9,7 +9,8 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json({ type: req => req.headers['content-type'] === 'application/json' || headerPattern.test(req.headers['content-type']) }))
 
-const MOJA_HUB_URL = process.env.MOCKDFSP_MOJA_HUB_URL ? process.env.MOCKDFSP_MOJA_HUB_URL : 'http://localhost:3000'
+const quotesEndpoint = process.env.MLAPI_URL ? process.env.MLAPI_URL : 'http://localhost:3000'
+const transfersEndpoint = process.env.MLSWITCH_URL ? process.env.MLSWITCH_URL : 'http://localhost:3001'
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -43,7 +44,7 @@ app.post('/quotes', async (req, res) => {
         'fspiop-source': quoteHeaders["fspiop-destination"],
     }
 
-    await axios.put(MOJA_HUB_URL + '/quotes/' + quoteRequest.quoteId, quoteResponse, {headers: quoteResponseHeaders})
+    await axios.put(quotesEndpoint + '/quotes/' + quoteRequest.quoteId, quoteResponse, {headers: quoteResponseHeaders})
 })
 
 app.put('/quotes/:quote_id', async (req, res) => {
@@ -82,7 +83,7 @@ app.post('/transfers', async (req, res) => {
         'fspiop-source': transferHeaders["fspiop-destination"],
     }
 
-    await axios.put(MOJA_HUB_URL + '/transfers/' + transferRequest.transferId, transferResponse, {headers: transferResponseHeaders})
+    await axios.put(transfersEndpoint + '/transfers/' + transferRequest.transferId, transferResponse, {headers: transferResponseHeaders})
 })
 
 app.put('/transfers/:quote_id', async (req, res) => {
