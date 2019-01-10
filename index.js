@@ -2,14 +2,14 @@ const axios = require("axios");
 
 const express = require('express')
 const app = express()
-const port = 3000
+const port = process.env.MOCKDFSP_PORT ? process.env.MOCKDFSP_PORT : 3000
 const headerPattern = RegExp('^application\\/vnd.interoperability.(transfers|quotes|parties)\\+json;version=1.0')
 const bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json({ type: req => req.headers['content-type'] === 'application/json' || headerPattern.test(req.headers['content-type']) }))
 
-const MOJA_HUB_URL = 'http://localhost:3000'
+const MOJA_HUB_URL = process.env.MOCKDFSP_MOJA_HUB_URL ? process.env.MOCKDFSP_MOJA_HUB_URL : 'http://localhost:3000'
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
