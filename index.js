@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const express = require('express')
 const app = express()
+const dfspId = process.env.DFSP_ID
 const port = process.env.MOCKDFSP_PORT ? process.env.MOCKDFSP_PORT : 3000
 const headerPattern = RegExp('^application\\/vnd.interoperability.(transfers|quotes|parties)\\+json;version=1.0')
 const bodyParser = require('body-parser')
@@ -9,14 +10,13 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json({ type: req => req.headers['content-type'] === 'application/json' || headerPattern.test(req.headers['content-type']) }))
 
-const quotesEndpoint = process.env.MLAPI_URL ? process.env.MLAPI_URL : 'http://localhost:3000'
-const transfersEndpoint = process.env.MLSWITCH_URL ? process.env.MLSWITCH_URL : 'http://localhost:3001'
+const transfersEndpoint = process.env.MLAPI_URL ? process.env.MLAPI_URL : 'http://localhost:3000'
+const quotesEndpoint = process.env.MLSWITCH_URL ? process.env.MLSWITCH_URL : 'http://localhost:3001'
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-
 // Quotes
-app.post('/quotes', async (req, res) => {
+app.post( '/' + dfspId + '/quotes', async (req, res) => {
 
     console.log('Recieved quote request', req.body)
     const quoteRequest = req.body
@@ -47,7 +47,7 @@ app.post('/quotes', async (req, res) => {
     await axios.put(quotesEndpoint + '/quotes/' + quoteRequest.quoteId, quoteResponse, {headers: quoteResponseHeaders})
 })
 
-app.put('/quotes/:quote_id', async (req, res) => {
+app.put('/' + dfspId + '/quotes/:quote_id', async (req, res) => {
 
     console.log('received quote put')
     console.log(req.body, req.headers)
@@ -59,7 +59,7 @@ app.put('/quotes/:quote_id', async (req, res) => {
 
 
 // Transfers
-app.post('/transfers', async (req, res) => {
+app.post('/' + dfspId + '/transfers', async (req, res) => {
 
     console.log('Recieved transfer request', req.body)
     const transferRequest = req.body
@@ -86,7 +86,7 @@ app.post('/transfers', async (req, res) => {
     await axios.put(transfersEndpoint + '/transfers/' + transferRequest.transferId, transferResponse, {headers: transferResponseHeaders})
 })
 
-app.put('/transfers/:quote_id', async (req, res) => {
+app.put('/' + dfspId + '/transfers/:quote_id', async (req, res) => {
 
     console.log('received transfer put')
     console.log(req.body, req.headers)
