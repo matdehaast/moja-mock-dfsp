@@ -71,15 +71,15 @@ app.post('/' + dfspId + '/transfers', async (req, res) => {
 
     await new Promise(resolve => setTimeout(resolve, 1000))
     const transferResponse = {
-        fulfilment: "mhPUT9ZAwd-BXLfeSd7-YPh46rBWRNBiTCSWjpku90s",
-        completedTimestamp: new Date(),
+        fulfilment: "uU0nuZNNPgilLlLX2n2r-sSE7-N6U4DukIj3rOLvzek",
+        completedTimestamp: (new Date()).toISOString(),
         transferState: "COMMITTED"
     }
 
     const transferResponseHeaders = {
         'Content-Type': 'application/vnd.interoperability.transfers+json;version=1.0',
         'fspiop-destination': transferHeaders["fspiop-source"],
-        'date' : new Date(),
+        'date' : transferHeaders.date,
         'fspiop-source': transferHeaders["fspiop-destination"],
     }
 
