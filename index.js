@@ -1,5 +1,4 @@
 const axios = require("axios");
-
 const express = require('express')
 const app = express()
 const dfspId = process.env.DFSP_ID
@@ -83,7 +82,21 @@ app.post('/' + dfspId + '/transfers', async (req, res) => {
         'fspiop-source': transferHeaders["fspiop-destination"],
     }
 
-    await axios.put(transfersEndpoint + '/transfers/' + transferRequest.transferId, transferResponse, {headers: transferResponseHeaders})
+    try{
+        await axios.put(transfersEndpoint + '/transfers/' + transferRequest.transferId, transferResponse, {headers: transferResponseHeaders})
+    }
+    catch(e){
+        console.log('error', e)
+    }
+})
+
+app.put('/' + dfspId + '/transfers/:transfer_id/error', async (req, res) => {
+
+    console.log('Received transfer error. transferId=', req.params.transfer_id)
+    console.log('headers:', req.headers)
+    console.log('body:', req.body)
+
+    res.status(202).end()
 })
 
 app.put('/' + dfspId + '/transfers/:quote_id', async (req, res) => {
@@ -96,6 +109,12 @@ app.put('/' + dfspId + '/transfers/:quote_id', async (req, res) => {
 
 })
 
+app.put('/' + dfspId + '/parties/:type/:type_id', async (req, res) => {
 
+    console.log('received parties put req', req.body)
+
+    res.status(202).end()
+
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
