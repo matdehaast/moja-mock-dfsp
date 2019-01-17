@@ -99,7 +99,7 @@ app.put('/' + dfspId + '/transfers/:transfer_id/error', async (req, res) => {
     res.status(202).end()
 })
 
-app.put('/' + dfspId + '/transfers/:quote_id', async (req, res) => {
+app.put('/' + dfspId + '/transfers/:transfer_id', async (req, res) => {
 
     console.log('received transfer put')
     console.log(req.body, req.headers)
