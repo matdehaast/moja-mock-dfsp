@@ -12,7 +12,7 @@ app.use(bodyParser.json({ type: req => req.headers['content-type'] === 'applicat
 const transfersEndpoint = process.env.MLAPI_URL ? process.env.MLAPI_URL : 'http://localhost:3000'
 const quotesEndpoint = process.env.MLSWITCH_URL ? process.env.MLSWITCH_URL : 'http://localhost:3001'
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send(`Hello World! from ${dfspId}`))
 
 // Quotes
 app.post( '/' + dfspId + '/quotes', async (req, res) => {
