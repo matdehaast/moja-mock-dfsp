@@ -5,6 +5,7 @@ const dfspId = process.env.DFSP_ID
 const port = process.env.MOCKDFSP_PORT ? process.env.MOCKDFSP_PORT : 3000
 const headerPattern = RegExp('^application\\/vnd.interoperability.(transfers|quotes|parties)\\+json;version=1.0')
 const bodyParser = require('body-parser')
+const Logger = require('debug')('mock-dfsp')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json({ type: req => req.headers['content-type'] === 'application/json' || headerPattern.test(req.headers['content-type']) }))
@@ -17,7 +18,7 @@ app.get('/', (req, res) => res.send(`Hello World! from ${dfspId}`))
 // Quotes
 app.post( '/' + dfspId + '/quotes', async (req, res) => {
 
-    console.log('Recieved quote request', req.body)
+    Logger('Received quote request', req.body)
     const quoteRequest = req.body
     const quoteHeaders = req.headers
 
@@ -43,16 +44,24 @@ app.post( '/' + dfspId + '/quotes', async (req, res) => {
         'fspiop-source': quoteHeaders["fspiop-destination"],
     }
 
-    await axios.put(quotesEndpoint + '/quotes/' + quoteRequest.quoteId, quoteResponse, {headers: quoteResponseHeaders})
+    Logger('Making put request to ', quotesEndpoint + '/quotes/' + quoteRequest.quoteId)
+    try{
+        const response = await axios.put(quotesEndpoint + '/quotes/' + quoteRequest.quoteId, quoteResponse, {headers: quoteResponseHeaders})
+        Logger('Received response', response)
+    }
+    catch(e){
+        Logger('Error putting ', e)
+    }
 })
 
 app.put('/' + dfspId + '/quotes/:quote_id', async (req, res) => {
 
-    console.log('received quote put')
-    console.log(req.body, req.headers)
+    Logger('received quote put quoteId=', req.params.quote_id)
+    Logger('headers', req.headers)
+    Logger('body', req.body)
 
     res.set('Content-Type', 'application/vnd.interoperability.quotes+json;version=1.0')
-    res.sendStatus(200)
+    res.sendStatus(202)
 
 })
 
