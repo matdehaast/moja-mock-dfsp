@@ -99,15 +99,6 @@ app.post('/' + dfspId + '/transfers', async (req, res) => {
     }
 })
 
-app.put('/' + dfspId + '/transfers/:transfer_id/error', async (req, res) => {
-
-    console.log('Received transfer error. transferId=', req.params.transfer_id)
-    console.log('headers:', req.headers)
-    console.log('body:', req.body)
-
-    res.status(202).end()
-})
-
 app.put('/' + dfspId + '/transfers/:transfer_id', async (req, res) => {
 
     console.log('received transfer put')
@@ -124,6 +115,18 @@ app.put('/' + dfspId + '/parties/:type/:type_id', async (req, res) => {
 
     res.status(202).end()
 
+})
+
+app.put('/' + dfspId + '/:serviceType/:service_id/error', async (req, res) => {
+
+    const serviceType = req.params.serviceType
+    const serviceId = req.params.service_id
+
+    console.log(`Received ${serviceType} error. id=${serviceId}`)
+    console.log('headers:', req.headers)
+    console.log('body:', req.body)
+
+    res.status(202).end()
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
